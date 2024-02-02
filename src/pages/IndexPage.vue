@@ -1,40 +1,54 @@
 <template>
-    
-	<header class="py-8">
-		<nav class="">
-			<div class="text-3xl">Task Tracker</div>
-		</nav>
-	</header>
-	<hr />
-	<body class="py-12 text-lg flex-col justify-center">
+	<div class="flex flex-col items-start">
 		<template v-for="task in tasks">
-			<div class="border p-6 mb-4">
-				id: {{ task.id }} <br />
-				title: {{ task.title }} <br />
-				description:
-				{{ task.description ?? 'No Description given' }} <br />
-				importance: {{ task.importance }}
+			<div class="border p-6 mb-4 min-w-96 flex flex-row items-center">
+				<div class="mr-3 flex-grow">
+					id: {{ task.id }} <br />
+					title: {{ task.title }} <br />
+					description:
+					{{
+						!task.description || task.description == ''
+							? 'No Description given'
+							: task.description
+					}}
+					<br />
+					importance: {{ task.importance }}
+				</div>
+				<div class="flex-shrink">
+					<button
+						class="bg-slate-600 px-4 py-2 rounded-full text-red-500"
+						@click="
+							deleteTask(
+								task.title,
+								task.description,
+								task.importance,
+								task.id,
+							)
+						"
+					>
+						X
+					</button>
+				</div>
 			</div>
 		</template>
 
-		<div class="flex justify-center">
+		<div class="flex-row mt-4">
 			<button
-				@click="console.log('a')"
+				@click="routerCreateNewTask"
 				class="bg-slate-700 p-4 rounded-md"
 			>
 				Create New Task
 			</button>
 		</div>
-	</body>
-	<template>
-		<footer></footer>
-	</template>
+	</div>
 </template>
 
 <script setup lang="ts">
-	import { addTaskFirebase, removeTaskFirebase } from '../firebase/firebase';
+	import { useRoute, useRouter } from 'vue-router';
+	import { removeTaskFirebase } from '../firebase/firebase';
 	import { firebaseTasksCollectionRef } from '../firebase/private_firebase/private_firebase';
 	import { useCollection } from 'vuefire';
+	import { Task } from '../stores/tasksStore';
 
 	// import { useTasksStore } from './stores/tasksStore';
 	// import { storeToRefs } from 'pinia';
@@ -47,6 +61,26 @@
 	});
 
 	const tasks = firebaseTasksArray;
+
+	const router = useRouter();
+	const route = useRoute();
+
+	function routerCreateNewTask() {
+		router.push('/create-new-task');
+	}
+	function deleteTask(
+		title: string,
+		description: string,
+		importance: number,
+		id: number,
+	) {
+		removeTaskFirebase({
+			title: title,
+			description: description,
+			importance: importance,
+			id: id,
+		} as Task);
+	}
 </script>
 
 <style scoped></style>

@@ -8,6 +8,7 @@ import IndexLayoutVue from './components/IndexLayout.vue';
 import ErrorNotFoundPageVue from './pages/ErrorNotFoundPage.vue';
 import IndexPageVue from './pages/IndexPage.vue';
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router';
+import CreateNewTaskPageVue from './pages/CreateNewTaskPage.vue';
 
 const pinia = createPinia();
 
@@ -20,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: '/create-new-task',
 		component: () => IndexLayoutVue,
-		children: [{ path: '', component: IndexPageVue }],
+		children: [{ path: '', component: CreateNewTaskPageVue }],
 	},
 	// Always leave this as last one,
 	// but you can also remove it
